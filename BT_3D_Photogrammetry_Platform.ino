@@ -1,3 +1,5 @@
+
+```C
 // Photogrammetry
 
 // +++++++++++ 設定藍牙
@@ -10,10 +12,11 @@ char val;  // 設定藍牙接收數據變數
 // +++++++++++++
 int maxspeed = 500;  // 電機最大速度 1000（正數為順時針）
 int maxaccel = 50;   // 電機最大加速度
-int xsteps = 16;     // 預設一圈停16次
+int xstops = 16;     // 預設一圈停16次
+int xsteps = 20;     // 預設Y軸增減幅度
 int ysteps = 20;     // 預設Y軸增減幅度
 int temp = 0;
-const int ypos[] = { 960, 1010, 1050, 1110 };  // Y座標 x4
+const int ypos[] = { 980, 1010, 1038, 1068 };  // Y座標 x4
 const int ypos_max = 4;                       // 最大Y座標數目
 
 // +++++++++++ 定義步進電機引腳 ESP32 Lolin Lite
@@ -88,17 +91,17 @@ void loop() {
       case 'b':
         testy();
         break;
-      // ++++++++++ xsteps=8
+      // ++++++++++ xstops=8
       case 'c':
-        xsteps = 8;
+        xstops = 8;
         break;
-      // ++++++++++ xsteps=16
+      // ++++++++++ xstops=16
       case 'd':
-        xsteps = 16;
+        xstops = 16;
         break;
-      // ++++++++++ xsteps=32
+      // ++++++++++ xstops=32
       case 'e':
-        xsteps = 32;
+        xstops = 32;
         break;
       // ++++++++++ X rotate a circle
       case 'f':
@@ -136,6 +139,18 @@ void loop() {
       // ++++++++++ set Y
       case 'l':
         stepperY.setCurrentPosition(1024);  // 複位步進電機初始位置
+        break;
+      // ++++++++++ X rotate increase
+      case 'm':
+        stepperX.moveTo(xsteps);
+        stepperX.runToPosition();
+        stepperX.setCurrentPosition(0);
+        break;
+      // ++++++++++ X rotate dencrease
+      case 'n':
+        stepperX.moveTo(-xsteps);
+        stepperX.runToPosition();
+        stepperX.setCurrentPosition(0);
         break;
       default:
         //
@@ -184,15 +199,16 @@ void restoreYpos() {
 }
 void Anglestop_Clk_X() {
   // 轉動一圈停頓次數換算步數
-  for (int x = 1; x <= xsteps; x++) {
+  for (int x = 1; x <= xstops; x++) {
     digitalWrite(LEDPin, HIGH);    // 拍照
     digitalWrite(PhotoPin, HIGH);  // 拍照
     delay(100);                    // 稍停 0.1秒
     digitalWrite(LEDPin, LOW);     // 停止拍照
     digitalWrite(PhotoPin, LOW);   // 停止拍照
-    stepperX.moveTo(2048 / xsteps * x);
+    stepperX.moveTo(2048 / xstops * x);
     stepperX.runToPosition();
     delay(100);
   }
   stepperX.setCurrentPosition(0);  // 複位步進電機初始位置
 }
+```
