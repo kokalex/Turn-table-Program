@@ -1,4 +1,6 @@
-雙軸小型模型拍攝台 - 連接方式<BR>
+雙軸小型模型拍攝台 - Arduino IDE - Sketch file
+
+連接方式
 <BR>
 微型控制器：ESP32 Lolin Lite<BR>
 開發板上的：LEDLEDPin 2<BR>
